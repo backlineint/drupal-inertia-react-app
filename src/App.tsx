@@ -1,35 +1,97 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { createHeadManager, router } from "@inertiajs/core";
+import { createElement, useEffect, useMemo, useState } from "react";
+import HeadContext from "./HeadContext";
+import PageContext from "./PageContext";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+interface AppProps {
+  children?: any;
+  initialPage: any;
+  initialComponent: any;
+  resolveComponent: any;
+  titleCallback?: any;
+  onHeadUpdate?: any;
 }
 
-export default App
+export default function App({
+  children,
+  initialPage,
+  initialComponent,
+  resolveComponent,
+  titleCallback,
+  onHeadUpdate,
+}: AppProps) {
+  const [current, setCurrent] = useState({
+    component: initialComponent || null,
+    page: initialPage,
+    key: null,
+  });
+
+  const headManager = useMemo(() => {
+    return createHeadManager(
+      typeof window === "undefined",
+      titleCallback || ((title) => title),
+      onHeadUpdate || (() => {})
+    );
+  }, []);
+
+  useEffect(() => {
+    router.init({
+      initialPage,
+      resolveComponent,
+      swapComponent: async ({ component, page, preserveState }) => {
+        setCurrent((current) => ({
+          component,
+          page,
+          key: preserveState ? current.key : Date.now(),
+        }));
+      },
+    });
+
+    router.on("navigate", () => headManager.forceUpdate());
+  }, []);
+
+  if (!current.component) {
+    return createElement(
+      HeadContext.Provider,
+      { value: headManager },
+      createElement(PageContext.Provider, { value: current.page }, null)
+    );
+  }
+
+  const renderChildren =
+    children ||
+    (({ Component, props, key }) => {
+      const child = createElement(Component, { key, ...props });
+
+      if (typeof Component.layout === "function") {
+        return Component.layout(child);
+      }
+
+      if (Array.isArray(Component.layout)) {
+        return Component.layout
+          .concat(child)
+          .reverse()
+          .reduce((children, Layout) =>
+            createElement(Layout, { children, ...props })
+          );
+      }
+
+      return child;
+    });
+
+  return createElement(
+    HeadContext.Provider,
+    { value: headManager },
+    createElement(
+      PageContext.Provider,
+      { value: current.page },
+      renderChildren({
+        Component: current.component,
+        key: current.key,
+        props: current.page.props,
+      })
+    )
+  );
+}
+
+App.displayName = "Inertia";
