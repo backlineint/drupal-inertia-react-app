@@ -1,15 +1,18 @@
-import { createHeadManager, router } from "@inertiajs/core";
+import { createHeadManager, router, PageResolver } from "@inertiajs/core";
 import { createElement, useEffect, useMemo, useState } from "react";
 import HeadContext from "./HeadContext";
 import PageContext from "./PageContext";
+
+type HeadManagerOnUpdate = (elements: string[]) => void;
+type HeadManagerTitleCallback = (title: string) => string;
 
 interface AppProps {
   children?: any;
   initialPage: any;
   initialComponent: any;
-  resolveComponent: any;
-  titleCallback?: any;
-  onHeadUpdate?: any;
+  resolveComponent: PageResolver;
+  titleCallback?: HeadManagerTitleCallback;
+  onHeadUpdate?: HeadManagerOnUpdate;
   slots: any;
 }
 
