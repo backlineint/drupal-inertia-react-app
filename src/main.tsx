@@ -11,7 +11,7 @@ createInertiaApp({
   },
   setup({ el, props }) {
     const slots = el.querySelectorAll("template");
-    const processedSlots = {};
+    const processedSlots = [];
     slots.forEach((element) => {
       const name = element.getAttribute("name");
       processedSlots[name] = parse(element.innerHTML);

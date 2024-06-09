@@ -1,4 +1,10 @@
-import { createHeadManager, router, PageResolver } from "@inertiajs/core";
+import {
+  createHeadManager,
+  router,
+  PageResolver,
+  Page,
+  PageProps,
+} from "@inertiajs/core";
 import { createElement, useEffect, useMemo, useState } from "react";
 import HeadContext from "./HeadContext";
 import PageContext from "./PageContext";
@@ -7,13 +13,15 @@ type HeadManagerOnUpdate = (elements: string[]) => void;
 type HeadManagerTitleCallback = (title: string) => string;
 
 interface AppProps {
+  // TODO - Try to remove any
   children?: any;
-  initialPage: any;
+  initialPage: Page<PageProps>;
+  // TODO - Try to remove any
   initialComponent: any;
   resolveComponent: PageResolver;
   titleCallback?: HeadManagerTitleCallback;
   onHeadUpdate?: HeadManagerOnUpdate;
-  slots: any;
+  slots: string | React.JSX.Element | React.JSX.Element[];
 }
 
 export default function App({

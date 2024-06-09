@@ -1,11 +1,6 @@
-interface PageProps {
-  props: {
-    body: string;
-  };
-  slots: any;
-}
+import { PropsFromContext } from "../types";
 
-export default function Page({ props, slots }: PageProps) {
+export default function Page({ props, slots }: PropsFromContext) {
   console.log("template", props, slots);
   // const { field_image, body, field_tags } = slots;
 
