@@ -1,5 +1,6 @@
 import { createInertiaApp } from "@inertiajs/react";
 import { createRoot } from "react-dom/client";
+import parse from "html-react-parser";
 
 import App from "./App.tsx";
 
@@ -9,6 +10,12 @@ createInertiaApp({
     return pages[`./Pages/${name}.tsx`];
   },
   setup({ el, props }) {
-    createRoot(el).render(<App {...props} />);
+    const slots = el.querySelectorAll("template");
+    const processedSlots = {};
+    slots.forEach((element) => {
+      const name = element.getAttribute("name");
+      processedSlots[name] = parse(element.innerHTML);
+    });
+    createRoot(el).render(<App {...props} slots={processedSlots} />);
   },
 });

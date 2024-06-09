@@ -10,6 +10,7 @@ interface AppProps {
   resolveComponent: any;
   titleCallback?: any;
   onHeadUpdate?: any;
+  slots: any;
 }
 
 export default function App({
@@ -19,6 +20,7 @@ export default function App({
   resolveComponent,
   titleCallback,
   onHeadUpdate,
+  slots,
 }: AppProps) {
   const [current, setCurrent] = useState({
     component: initialComponent || null,
@@ -61,7 +63,7 @@ export default function App({
   const renderChildren =
     children ||
     (({ Component, props, key }) => {
-      const child = createElement(Component, { key, ...props });
+      const child = createElement(Component, { key, ...props, slots });
 
       if (typeof Component.layout === "function") {
         return Component.layout(child);
@@ -72,7 +74,7 @@ export default function App({
           .concat(child)
           .reverse()
           .reduce((children, Layout) =>
-            createElement(Layout, { children, ...props })
+            createElement(Layout, { children, ...props, slots })
           );
       }
 

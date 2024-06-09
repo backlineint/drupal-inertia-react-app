@@ -1,11 +1,11 @@
-interface ArticleProps {
+interface PageProps {
   props: {
     body: string;
   };
   slots: any;
 }
 
-export default function Article({ props, slots }: ArticleProps) {
+export default function Page({ props, slots }: PageProps) {
   console.log("template", props, slots);
   // const { field_image, body, field_tags } = slots;
 
