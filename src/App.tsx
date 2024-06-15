@@ -14,10 +14,10 @@ type HeadManagerTitleCallback = (title: string) => string;
 
 interface AppProps {
   // TODO - Try to remove any
+  // children?: typeof Children;
   children?: any;
   initialPage: Page<PageProps>;
-  // TODO - Try to remove any
-  initialComponent: any;
+  initialComponent: unknown;
   resolveComponent: PageResolver;
   titleCallback?: HeadManagerTitleCallback;
   onHeadUpdate?: HeadManagerOnUpdate;
