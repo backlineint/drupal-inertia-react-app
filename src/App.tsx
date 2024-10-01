@@ -1,3 +1,8 @@
+/**
+ * This is mostly a straight port of the Inertia App component, but with a few
+ * tweaks to support Drupal integration.
+ */
+
 import {
   createHeadManager,
   router,

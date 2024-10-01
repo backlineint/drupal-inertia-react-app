@@ -1,7 +1,7 @@
 import { PropsFromContext } from "../types";
 
 export default function Page({ props, slots }: PropsFromContext) {
-  console.log("template", props, slots);
+  console.log("Page template", props, slots);
   // const { field_image, body, field_tags } = slots;
 
   return (
